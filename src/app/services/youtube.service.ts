@@ -11,7 +11,7 @@ export class YoutubeService {
   private youtbeUrl = 'https://www.googleapis.com/youtube/v3';
   private apiKey    = 'AIzaSyDH6lwxdXO9A-Y11xm8xMGQsYh8ZPLRclE';
   private playList  = 'UU36xmz34q02JYaZYKrMwXng';
-  private nextPageToken: string;
+  private nextPageToken = '';
 
 
   constructor( private http: HttpClient ) { }
@@ -21,9 +21,10 @@ export class YoutubeService {
 
     const params = new HttpParams()
       .set('part', 'snippet')
-      .set('maxResults', '010')
+      .set('maxResults', '20')
       .set('playlistId', this.playList)
-      .set('key', this.apiKey);
+      .set('key', this.apiKey)
+      .set('pageToken', this.nextPageToken);
 
     return this.http.get<YoutubeRespuesta>(url, { params })
       .pipe(
