@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http'; // Utilizamos HttpClient para usar el método GET
 import { YoutubeRespuesta, Video } from '../models/youtube.models';
 import { map } from 'rxjs/operators';
 
@@ -16,24 +16,25 @@ export class YoutubeService {
 
   constructor( private http: HttpClient ) { }
 
+  // Función que solicita a la API de google la información y la obtiene en formato Json
   getVideos() {
     const url = `${ this.youtbeUrl}/playlistItems`;
 
-    const params = new HttpParams()
-      .set('part', 'snippet')
-      .set('maxResults', '20')
-      .set('playlistId', this.playList)
-      .set('key', this.apiKey)
-      .set('pageToken', this.nextPageToken);
+    const params = new HttpParams() // Parámetro de solicitud a la API
+      .set('part', 'snippet')       // Solicitud tipo snippet
+      .set('maxResults', '20')      // Nos devuelva la cantidad indicada de datos
+      .set('playlistId', this.playList)  // Tipo de solicitud 
+      .set('key', this.apiKey)      // Enviamos la API KEY que google nos generó y dió
+      .set('pageToken', this.nextPageToken);  // Enviamos el token de la siguiente página
 
-    return this.http.get<YoutubeRespuesta>(url, { params })
-      .pipe(
-        map(resp => {
-          this.nextPageToken = resp.nextPageToken;
-          return resp.items;
+    return this.http.get<YoutubeRespuesta>(url, { params })  // La función devuelve un objeto de tipo YoutubeRespuesta el cual puede verse en los modelos
+      .pipe(                        // Funciona una cantidad de funciones de rxjs
+        map(resp => {              // Map realiza operación matemática
+          this.nextPageToken = resp.nextPageToken; // Enviamos el nuevo token de la siguiente página obtenida
+          return resp.items;       // Devolvemos los datos obtenidos
         }),
 
-        map( items =>  items.map( video => video.snippet) )
+        map( items =>  items.map( video => video.snippet) ) // se realiza un nuevo filtrado
       );
   }
 }
